@@ -3,6 +3,8 @@
 # Перечень volume
 volumes:
   pg_data:
+  # volume — для статических файлов
+  static:
 
 # Перечень контейнеров
 services:
@@ -21,6 +23,9 @@ services:
     # Из какого Dockerfile собирать образ для этого контейнера:
     build: ./backend/
     env_file: .env
+    # Тут подключаем volume к backend
+    volumes:
+      - static:/backend_static
     # Какие контейнеры нужно запустить до старта этого контейнера:
     depends_on:
       - db
@@ -28,3 +33,22 @@ services:
   frontend:
     env_file: .env
     build: ./frontend/
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+# Добавляем новый контейнер: gateway
+  gateway:
+    # Сбилдить и запустить образ, 
+    # описанный в Dockerfile в папке gateway
+    build: ./gateway/
+    # А тут подключаем volume со статикой к gateway
+    volumes:
+      - static:/staticfiles
+    # Ключ ports устанавливает
+    # перенаправление всех запросов с порта 8000 хоста
+    # на порт 80 контейнера
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
+    restart: on-failure
