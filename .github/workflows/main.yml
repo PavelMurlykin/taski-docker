@@ -19,7 +19,7 @@ jobs:
         # ведь эта база будет работать только во время прогона тестов
         env:
           POSTGRES_USER: django_user
-          POSTGRES_django_password: password
+          POSTGRES_PASSWORD: password
           POSTGRES_DB: taski
         ports:
           - 5432:5432
@@ -50,7 +50,7 @@ jobs:
       # Добавляем env-переменные для доступа к БД
       env:
         POSTGRES_USER: django_user
-        POSTGRES_django_password: password
+        POSTGRES_PASSWORD: password
         POSTGRES_DB: taski
         # Сервер БД запущен в Docker, но его порт проброшен на хост
         # Поэтому подключаемся к 127.0.0.1:5432
